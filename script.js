@@ -1,45 +1,46 @@
+const player = document.getElementById("player");
 const game = document.querySelector(".game");
-const player = document.querySelector(".player");
-const scoreText = document.querySelector(".score");
-const gameOverScreen = document.querySelector(".game-over");
-const finalScoreText = document.getElementById("finalScore");
+const scoreText = document.getElementById("score");
+const gameOverScreen = document.getElementById("gameOverScreen");
+const finalScore = document.getElementById("finalScore");
+const ground = document.querySelector(".ground");
 
 let isJumping = false;
 let score = 0;
+let gameSpeed = 5;
+let lastSpeedBoost = 0;
 let gameRunning = true;
 
 /* JUMP */
+document.addEventListener("keydown", jump);
+document.addEventListener("touchstart", jump);
+
 function jump() {
   if (isJumping || !gameRunning) return;
 
   isJumping = true;
-  let up = 0;
+  player.classList.add("jump");
 
-  let jumpUp = setInterval(() => {
-    if (up >= 120) {
-      clearInterval(jumpUp);
-
-      let jumpDown = setInterval(() => {
-        if (up <= 0) {
-          clearInterval(jumpDown);
-          isJumping = false;
-        }
-        up -= 5;
-        player.style.bottom = 40 + up + "px";
-      }, 20);
-    }
-
-    up += 5;
-    player.style.bottom = 40 + up + "px";
-  }, 20);
+  setTimeout(() => {
+    player.classList.remove("jump");
+    isJumping = false;
+  }, 500);
 }
 
-/* CONTROLS */
-document.addEventListener("keydown", e => {
-  if (e.code === "Space") jump();
-});
+/* SCORE LOOP */
+const scoreInterval = setInterval(() => {
+  if (!gameRunning) return;
 
-document.addEventListener("click", jump);
+  score++;
+  scoreText.innerText = "Score: " + score;
+
+  // SPEED INCREASE EVERY 10 SCORE
+  if (score % 10 === 0 && score !== lastSpeedBoost) {
+    gameSpeed++;
+    lastSpeedBoost = score;
+    ground.style.animationDuration = (2 / gameSpeed) + "s";
+  }
+}, 200);
 
 /* OBSTACLES */
 function createObstacle() {
@@ -47,50 +48,49 @@ function createObstacle() {
 
   const obstacle = document.createElement("div");
   obstacle.classList.add("obstacle");
-  obstacle.style.right = "-30px";
   game.appendChild(obstacle);
 
-  let pos = -30;
+  let obstacleX = 800;
 
-  let move = setInterval(() => {
+  const moveInterval = setInterval(() => {
     if (!gameRunning) {
-      clearInterval(move);
+      clearInterval(moveInterval);
       obstacle.remove();
       return;
     }
 
-    pos += 5;
-    obstacle.style.right = pos + "px";
+    obstacleX -= gameSpeed;
+    obstacle.style.left = obstacleX + "px";
 
     // COLLISION
     const playerRect = player.getBoundingClientRect();
-    const obsRect = obstacle.getBoundingClientRect();
+    const obstacleRect = obstacle.getBoundingClientRect();
 
     if (
-      playerRect.left < obsRect.right &&
-      playerRect.right > obsRect.left &&
-      playerRect.bottom > obsRect.top
+      obstacleRect.left < playerRect.right &&
+      obstacleRect.right > playerRect.left &&
+      obstacleRect.bottom > playerRect.top &&
+      obstacleRect.top < playerRect.bottom
     ) {
-      endGame();
+      gameOver();
     }
 
-    if (pos > 800) {
+    if (obstacleX < -50) {
+      clearInterval(moveInterval);
       obstacle.remove();
-      clearInterval(move);
-      score++;
-      scoreText.textContent = "Score: " + score;
     }
   }, 20);
 }
 
-/* GAME LOOP */
-let obstacleInterval = setInterval(createObstacle, 1500);
+/* OBSTACLE SPAWN LOOP */
+const obstacleInterval = setInterval(() => {
+  if (gameRunning) createObstacle();
+}, 2000);
 
-/* END GAME */
-function endGame() {
+/* GAME OVER */
+function gameOver() {
   gameRunning = false;
-  clearInterval(obstacleInterval);
-  finalScoreText.textContent = score;
+  finalScore.innerText = "Your Score: " + score;
   gameOverScreen.classList.remove("hidden");
 }
 
