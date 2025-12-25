@@ -6,19 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-
   <div class="game">
-    <div class="score">Score: 0</div>
+    <div class="score" id="score">Score: 0</div>
 
-    <div class="player"></div>
+    <div class="player" id="player"></div>
     <div class="ground"></div>
   </div>
 
-  <!-- GAME OVER SCREEN -->
-  <div class="game-over hidden">
+  <!-- Game Over Screen -->
+  <div class="overlay hidden" id="gameOverScreen">
     <h1>Game Over</h1>
-    <p>Your Score: <span id="finalScore">0</span></p>
+    <p id="finalScore"></p>
     <button onclick="restartGame()">Restart</button>
   </div>
 
