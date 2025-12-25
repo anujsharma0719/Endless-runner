@@ -1,0 +1,92 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* GAME AREA */
+.game {
+  width: 800px;
+  height: 300px;
+  background: skyblue;
+  border: 3px solid #000;
+  position: relative;
+  overflow: hidden;
+}
+
+/* PLAYER */
+.player {
+  width: 40px;
+  height: 40px;
+  background: red;
+  position: absolute;
+  bottom: 40px;
+  left: 60px;
+}
+
+/* GROUND */
+.ground {
+  width: 200%;
+  height: 40px;
+  background: #654321;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  animation: moveGround 2s linear infinite;
+}
+
+/* OBSTACLE */
+.obstacle {
+  width: 30px;
+  height: 50px;
+  background: purple;
+  position: absolute;
+  bottom: 40px;
+}
+
+/* SCORE */
+.score {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* GAME OVER */
+.game-over {
+  position: absolute;
+  background: #1f3a44;
+  color: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.game-over button {
+  padding: 10px 20px;
+  margin-top: 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ANIMATIONS */
+@keyframes moveGround {
+  from { left: 0; }
+  to { left: -50%; }
+}
